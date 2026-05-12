@@ -2,13 +2,10 @@
 
 namespace App\Models;
 
-use MongoDB\Laravel\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class Scheme extends Model
 {
-    protected $connection = 'mongodb';
-    protected $collection = 'schemes';
-
     protected $fillable = [
         'title',
         'description',
@@ -42,7 +39,7 @@ class Scheme extends Model
         return $query->where('is_active', true);
     }
 
-    public function scopeByCategory($query, string $categoryId)
+    public function scopeByCategory($query, int $categoryId)
     {
         return $query->where('category_id', $categoryId);
     }
@@ -50,9 +47,9 @@ class Scheme extends Model
     public function scopeSearch($query, string $term)
     {
         return $query->where(function ($q) use ($term) {
-            $q->where('title', 'regex', "/$term/i")
-              ->orWhere('description', 'regex', "/$term/i")
-              ->orWhere('tags', 'elemMatch', ['$regex' => $term, '$options' => 'i']);
+            $q->where('title', 'LIKE', "%{$term}%")
+              ->orWhere('description', 'LIKE', "%{$term}%")
+              ->orWhere('tags', 'LIKE', "%{$term}%");
         });
     }
 

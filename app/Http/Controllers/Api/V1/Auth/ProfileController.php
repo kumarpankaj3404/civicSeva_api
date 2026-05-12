@@ -20,7 +20,7 @@ class ProfileController extends Controller
         return response()->json([
             'success' => true,
             'data'    => [
-                'id'                => (string) $user->_id,
+                'id'                => $user->id,
                 'name'              => $user->name,
                 'email'             => $user->email,
                 'phone'             => $user->phone,
@@ -33,6 +33,10 @@ class ProfileController extends Controller
                 'caste_category'    => $user->caste_category,
                 'profile_completed' => $user->profile_completed,
                 'roles'             => $user->getRoleNames(),
+                'preferences'       => array_replace_recursive(
+                    ['theme' => 'system', 'density' => 'comfortable', 'privacy' => ['save_chat' => true, 'analytics' => true]],
+                    $user->preferences ?? []
+                ),
                 'created_at'        => $user->created_at,
                 'updated_at'        => $user->updated_at,
             ],

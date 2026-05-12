@@ -249,7 +249,7 @@ class SchemeSeeder extends Seeder
             Scheme::updateOrCreate(
                 ['title' => $schemeData['title']],
                 array_merge($schemeData, [
-                    'category_id' => $category ? (string) $category->_id : null,
+                    'category_id' => $category ? $category->id : null,
                     'is_active'   => true,
                 ])
             );

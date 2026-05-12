@@ -63,7 +63,7 @@ class LoginController extends Controller
     private function formatUser(User $user): array
     {
         return [
-            'id'                => (string) $user->_id,
+            'id'                => $user->id,
             'name'              => $user->name,
             'email'             => $user->email,
             'phone'             => $user->phone,

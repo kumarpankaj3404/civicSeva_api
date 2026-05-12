@@ -20,7 +20,7 @@ class RegisterController extends Controller
     {
         $validated = $request->validate([
             'name'     => ['required', 'string', 'max:255'],
-            'email'    => ['required', 'email', 'unique:mongodb.users,email'],
+            'email'    => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'confirmed', Password::min(8)],
             'phone'    => ['nullable', 'string', 'max:15'],
         ]);
@@ -52,7 +52,7 @@ class RegisterController extends Controller
     private function formatUser(User $user): array
     {
         return [
-            'id'                => (string) $user->_id,
+            'id'                => $user->id,
             'name'              => $user->name,
             'email'             => $user->email,
             'phone'             => $user->phone,

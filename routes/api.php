@@ -3,11 +3,13 @@
 use App\Http\Controllers\Api\V1\ApplicationController;
 use App\Http\Controllers\Api\V1\AssistantController;
 use App\Http\Controllers\Api\V1\Auth\LoginController;
+use App\Http\Controllers\Api\V1\Auth\PreferencesController;
 use App\Http\Controllers\Api\V1\Auth\ProfileController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\EligibilityController;
 use App\Http\Controllers\Api\V1\SchemeController;
+use App\Http\Controllers\Api\V1\SupportController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,6 +19,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('v1')->group(function () {
+    // ─── Public: Support ───────────────────────────────────────────────────────
+    Route::post('support/ticket', [SupportController::class, 'submitTicket']);
 
     // ─── Public: Auth ──────────────────────────────────────────────────────────
     Route::prefix('auth')->group(function () {
@@ -40,6 +44,8 @@ Route::prefix('v1')->group(function () {
         Route::post('auth/logout',       [LoginController::class,  'logout'])->name('auth.logout');
         Route::get('auth/me',            [ProfileController::class,'me'])->name('auth.me');
         Route::put('auth/profile',       [ProfileController::class,'update'])->name('auth.profile.update');
+        Route::get('auth/preferences',   [PreferencesController::class,'show'])->name('auth.preferences.show');
+        Route::put('auth/preferences',   [PreferencesController::class,'update'])->name('auth.preferences.update');
 
         // Conversations (Chat History)
         Route::prefix('assistant')->group(function () {

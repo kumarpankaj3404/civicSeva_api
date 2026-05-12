@@ -2,13 +2,10 @@
 
 namespace App\Models;
 
-use MongoDB\Laravel\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
 {
-    protected $connection = 'mongodb';
-    protected $collection = 'messages';
-
     protected $fillable = [
         'conversation_id',
         'role',
@@ -23,12 +20,9 @@ class Message extends Model
         ];
     }
 
-    // Roles
     const ROLE_USER      = 'user';
     const ROLE_ASSISTANT = 'assistant';
     const ROLE_SYSTEM    = 'system';
-
-    // ─── Relationships ────────────────────────────────────────────────────────────
 
     public function conversation()
     {

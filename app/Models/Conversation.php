@@ -2,13 +2,10 @@
 
 namespace App\Models;
 
-use MongoDB\Laravel\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class Conversation extends Model
 {
-    protected $connection = 'mongodb';
-    protected $collection = 'conversations';
-
     protected $fillable = [
         'user_id',
         'session_id',
@@ -24,19 +21,14 @@ class Conversation extends Model
         ];
     }
 
-    // Statuses
     const STATUS_ACTIVE   = 'active';
     const STATUS_CLOSED   = 'closed';
     const STATUS_ARCHIVED = 'archived';
-
-    // ─── Scopes ───────────────────────────────────────────────────────────────────
 
     public function scopeActive($query)
     {
         return $query->where('status', self::STATUS_ACTIVE);
     }
-
-    // ─── Relationships ────────────────────────────────────────────────────────────
 
     public function user()
     {

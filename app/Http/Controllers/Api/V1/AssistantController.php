@@ -19,13 +19,14 @@ class AssistantController extends Controller
      */
     public function listConversations(Request $request): JsonResponse
     {
-        $conversations = Conversation::where('user_id', (string) $request->user()->_id)
+        $conversations = Conversation::where('user_id', $request->user()->id)
+            ->where('status', '!=', Conversation::STATUS_ARCHIVED)
             ->orderBy('updated_at', 'desc')
             ->paginate($request->integer('per_page', 20));
 
         // Attach last message preview
         $items = collect($conversations->items())->map(function (Conversation $conv) {
-            $lastMessage = Message::where('conversation_id', (string) $conv->_id)
+            $lastMessage = Message::where('conversation_id', $conv->id)
                 ->orderBy('created_at', 'desc')
                 ->first();
 
@@ -62,7 +63,7 @@ class AssistantController extends Controller
         ]);
 
         $conversation = Conversation::create([
-            'user_id'            => (string) $request->user()->_id,
+            'user_id'            => $request->user()->id,
             'session_id'         => Str::uuid()->toString(),
             'title'              => $request->input('title', 'New Conversation'),
             'status'             => Conversation::STATUS_ACTIVE,
@@ -82,8 +83,8 @@ class AssistantController extends Controller
      */
     public function showConversation(Request $request, string $id): JsonResponse
     {
-        $conversation = Conversation::where('_id', $id)
-            ->where('user_id', (string) $request->user()->_id)
+        $conversation = Conversation::where('id', $id)
+            ->where('user_id', $request->user()->id)
             ->firstOrFail();
 
         $messages = Message::where('conversation_id', $id)
@@ -104,8 +105,8 @@ class AssistantController extends Controller
      */
     public function archiveConversation(Request $request, string $id): JsonResponse
     {
-        $conversation = Conversation::where('_id', $id)
-            ->where('user_id', (string) $request->user()->_id)
+        $conversation = Conversation::where('id', $id)
+            ->where('user_id', $request->user()->id)
             ->firstOrFail();
 
         $conversation->update(['status' => Conversation::STATUS_ARCHIVED]);
@@ -126,8 +127,8 @@ class AssistantController extends Controller
             'interview_progress' => ['required', 'array'],
         ]);
 
-        $conversation = Conversation::where('_id', $id)
-            ->where('user_id', (string) $request->user()->_id)
+        $conversation = Conversation::where('id', $id)
+            ->where('user_id', $request->user()->id)
             ->firstOrFail();
 
         $conversation->update([
@@ -160,8 +161,8 @@ class AssistantController extends Controller
      */
     public function storeMessages(Request $request, string $id): JsonResponse
     {
-        $conversation = Conversation::where('_id', $id)
-            ->where('user_id', (string) $request->user()->_id)
+        $conversation = Conversation::where('id', $id)
+            ->where('user_id', $request->user()->id)
             ->firstOrFail();
 
         $request->validate([
@@ -174,7 +175,7 @@ class AssistantController extends Controller
         $created = [];
         foreach ($request->messages as $msgData) {
             $created[] = Message::create([
-                'conversation_id'  => (string) $conversation->_id,
+                'conversation_id'  => $conversation->id,
                 'role'             => $msgData['role'],
                 'content'          => $msgData['content'],
                 'context_metadata' => $msgData['context_metadata'] ?? null,

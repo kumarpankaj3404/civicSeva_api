@@ -41,7 +41,7 @@ class EligibilityController extends Controller
         return response()->json([
             'success' => true,
             'data'    => array_merge($result, [
-                'scheme_id'    => (string) $scheme->_id,
+                'scheme_id'    => $scheme->id,
                 'scheme_title' => $scheme->title,
             ]),
         ]);
@@ -61,13 +61,13 @@ class EligibilityController extends Controller
             'applicant_data' => ['required', 'array'],
         ]);
 
-        $schemes = Scheme::whereIn('_id', $request->scheme_ids)->get();
+        $schemes = Scheme::whereIn('id', $request->scheme_ids)->get();
         $results = [];
 
         foreach ($schemes as $scheme) {
             $result    = $this->eligibilityService->evaluate($scheme, $request->applicant_data);
             $results[] = array_merge($result, [
-                'scheme_id'    => (string) $scheme->_id,
+                'scheme_id'    => $scheme->id,
                 'scheme_title' => $scheme->title,
                 'category_id'  => $scheme->category_id,
             ]);
